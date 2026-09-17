@@ -34,19 +34,24 @@
         form {
             background-color: #12181F;
             padding: 20px;
-            border: 2px solid #3DDCFF;
-            box-shadow: 0 0 8px #3DDCFF, 0 0 16px rgba(61,220,255,0.5);
             width: 80%;
             max-width: 400px;
         }
-        input, textarea {
+        .field {
             width: 100%;
-            padding: 10px;
+            text-align: center;
             margin: 10px 0;
-            background-color: #12181F;
-            color: #F5F1EA;
             border: 2px solid #3DDCFF;
             box-shadow: 0 0 8px #3DDCFF, 0 0 16px rgba(61,220,255,0.5);
+            border-radius: 5px;
+        }
+        input, textarea {
+            width: 90%;
+            padding: 10px;
+            background-color: #12181F;
+            color: #F5F1EA;
+            border: none;
+            box-shadow: none;
             border-radius: 5px;
         }
         button {
@@ -75,11 +80,21 @@
     </header>
     <div class="form-container">
         <form action="#" method="post">
-            <input type="text" name="nombre" placeholder="Nombre" required>
-            <input type="text" name="tamano" placeholder="Tamaño de la pieza" required>
-            <input type="file" name="archivo" required>
-            <input type="email" name="email" placeholder="Correo electrónico" required>
-            <input type="tel" name="telefono" placeholder="Número de teléfono" required>
+            <div class="field">
+                <input type="text" name="nombre" placeholder="Nombre" required>
+            </div>
+            <div class="field">
+                <input type="text" name="tamano" placeholder="Tamaño de la pieza" required>
+            </div>
+            <div class="field">
+                <input type="file" name="archivo" required>
+            </div>
+            <div class="field">
+                <input type="email" name="email" placeholder="Correo electrónico" required>
+            </div>
+            <div class="field">
+                <input type="tel" name="telefono" placeholder="Número de teléfono" required>
+            </div>
             <button type="submit">Enviar</button>
         </form>
     </div>
