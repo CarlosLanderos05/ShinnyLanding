@@ -74,6 +74,11 @@
         p {
             margin-top: 10px; /* Mantener el espacio arriba del p */
         }
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -92,7 +97,7 @@
     <p>Para una cotización precisa, súbete una imagen clara de la pieza que necesitas. También, indícanos las dimensiones aproximadas. ¡Así podemos evaluar el proyecto a la perfección!</p>
     </div>
     <div class="form-container">
-        <form action="#" method="post">
+        <form action="#" method="post" onsubmit="return validateForm()">
             <div class="field">
                 <input type="text" name="nombre" placeholder="Nombre" required>
             </div>
@@ -100,16 +105,50 @@
                 <input type="text" name="tamano" placeholder="Tamaño de la pieza" required>
             </div>
             <div class="field">
-                <input type="file" name="archivo" required>
+                <input type="file" name="archivo" accept=".stl,image/*" required>
+                <div class="error" id="archivoError"></div>
             </div>
             <div class="field">
                 <input type="email" name="email" placeholder="Correo electrónico" required>
             </div>
             <div class="field">
-                <input type="tel" name="telefono" placeholder="Número de teléfono" required>
+                <input type="tel" name="telefono" placeholder="10 dígitos, sin espacios" pattern="[0-9]{10}" required>
+                <div class="error" id="telefonoError"></div>
             </div>
             <button type="submit">Enviar</button>
         </form>
     </div>
+    <script>
+        function validateForm() {
+            const archivoInput = document.querySelector('input[name="archivo"]');
+            const telefonoInput = document.querySelector('input[name="telefono"]');
+            const archivoError = document.getElementById('archivoError');
+            const telefonoError = document.getElementById('telefonoError');
+            let isValid = true;
+
+            // Validación de archivo
+            const file = archivoInput.files[0];
+            if (file) {
+                const extension = file.name.split('.').pop().toLowerCase();
+                const validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'stl'];
+                if (!validExtensions.includes(extension)) {
+                    archivoError.textContent = "Solo se aceptan imágenes o archivos .stl";
+                    isValid = false;
+                } else {
+                    archivoError.textContent = "";
+                }
+            }
+
+            // Validación de teléfono
+            if (!/^(\+52)?[0-9]{10}$/.test(telefonoInput.value)) {
+                telefonoError.textContent = "Ingresa un número de teléfono válido de 10 dígitos";
+                isValid = false;
+            } else {
+                telefonoError.textContent = "";
+            }
+
+            return isValid;
+        }
+    </script>
 </body>
 </html>
