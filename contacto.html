@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto - Shinny Printing Lab</title>
+    <style>
+        body {
+            background-color: #12181F;
+            color: #F5F1EA;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #12181F;
+            padding: 10px 0;
+        }
+        nav a {
+            color: #F5F1EA;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 18px;
+        }
+        nav a.active {
+            color: #FF8A3D;
+        }
+        .form-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        form {
+            background-color: #12181F;
+            padding: 20px;
+            border: 2px solid #3DDCFF;
+            box-shadow: 0 0 8px #3DDCFF, 0 0 16px rgba(61,220,255,0.5);
+            width: 80%;
+            max-width: 400px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #12181F;
+            color: #F5F1EA;
+            border: 2px solid #3DDCFF;
+            box-shadow: 0 0 8px #3DDCFF, 0 0 16px rgba(61,220,255,0.5);
+            border-radius: 5px;
+        }
+        textarea {
+            resize: none;
+            height: 100px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #FF8A3D;
+            color: #F5F1EA;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #FF5722;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="cotiza.html">Cotiza tu pieza</a>
+            <a href="contacto.html" class="active">Contacto</a>
+        </nav>
+    </header>
+    <div class="form-container">
+        <form action="#" method="post">
+            <input type="text" name="nombre" placeholder="Nombre" required>
+            <input type="email" name="email" placeholder="Correo electrónico" required>
+            <textarea name="mensaje" placeholder="Mensaje" required></textarea>
+            <button type="submit">Enviar</button>
+        </form>
+    </div>
+</body>
+</html>
