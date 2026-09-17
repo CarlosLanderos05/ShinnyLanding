@@ -44,6 +44,7 @@
             border: 2px solid #3DDCFF;
             box-shadow: 0 0 8px #3DDCFF, 0 0 16px rgba(61,220,255,0.5);
             border-radius: 5px;
+            position: relative;
         }
         input, textarea {
             width: 90%;
@@ -79,6 +80,15 @@
             font-size: 12px;
             margin-top: 5px;
         }
+        .lada {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #12181F;
+            color: #F5F1EA;
+            padding: 5px;
+        }
     </style>
 </head>
 <body>
@@ -87,14 +97,13 @@
             <a href="index.html">Inicio</a>
             <a href="cotiza.html" class="active">Cotiza tu pieza</a>
             <a href="contacto.html">Contacto</a>
-        
             <a href="http://100.121.201.91/" target="_blank">Polish</a>
             <a href="tienda.html">Tienda en linea</a>
         </nav>
     </header>
     <div style="text-align:center; padding: 20px 20px 0;">
-    <h1>¡Dale vida a tu idea!</h1>
-    <p>Para una cotización precisa, súbete una imagen clara de la pieza que necesitas. También, indícanos las dimensiones aproximadas. ¡Así podemos evaluar el proyecto a la perfección!</p>
+        <h1>¡Dale vida a tu idea!</h1>
+        <p>Para una cotización precisa, súbete una imagen clara de la pieza que necesitas. También, indícanos las dimensiones aproximadas. ¡Así podemos evaluar el proyecto a la perfección!</p>
     </div>
     <div class="form-container">
         <form action="#" method="post" onsubmit="return validateForm()">
@@ -112,7 +121,16 @@
                 <input type="email" name="email" placeholder="Correo electrónico" required>
             </div>
             <div class="field">
-                <input type="tel" name="telefono" placeholder="10 dígitos, sin espacios" pattern="[0-9]{10}" required>
+                <select name="pais_lada" onchange="updateLada()" data-lada="+52">
+                    <option value="+52" data-lada="+52" selected>Mexico (+52)</option>
+                    <option value="+1" data-lada="+1">Estados Unidos (+1)</option>
+                    <option value="+1" data-lada="+1">Canada (+1)</option>
+                    <option value="+57" data-lada="+57">Colombia (+57)</option>
+                    <option value="+54" data-lada="+54">Argentina (+54)</option>
+                    <option value="+34" data-lada="+34">España (+34)</option>
+                </select>
+                <span class="lada" id="ladaDisplay">+52</span>
+                <input type="tel" name="telefono" placeholder="10 dígitos, sin espacios" required>
                 <div class="error" id="telefonoError"></div>
             </div>
             <button type="submit">Enviar</button>
@@ -140,15 +158,32 @@
             }
 
             // Validación de teléfono
-            if (!/^(\+52)?[0-9]{10}$/.test(telefonoInput.value)) {
-                telefonoError.textContent = "Ingresa un número de teléfono válido de 10 dígitos";
+            if (!/^\d{7,15}$/.test(telefonoInput.value)) {
+                telefonoError.textContent = "Ingresa un número de teléfono válido";
                 isValid = false;
             } else {
                 telefonoError.textContent = "";
             }
 
+            // Combinar lada y teléfono para enviar
+            const paisLadaSelect = document.querySelector('select[name="pais_lada"]');
+            const lada = paisLadaSelect.getAttribute('data-lada');
+            telefonoInput.value = lada + telefonoInput.value;
+
             return isValid;
         }
+
+        function updateLada() {
+            const paisLadaSelect = document.querySelector('select[name="pais_lada"]');
+            const ladaDisplay = document.getElementById('ladaDisplay');
+            const selectedOption = paisLadaSelect.options[paisLadaSelect.selectedIndex];
+            const lada = selectedOption.getAttribute('data-lada');
+            ladaDisplay.textContent = lada;
+            paisLadaSelect.setAttribute('data-lada', lada);
+        }
+
+        // Actualizar lada al cargar la página
+        updateLada();
     </script>
 </body>
 </html>
