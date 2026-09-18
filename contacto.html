@@ -78,6 +78,18 @@
         p {
             margin-top: 10px; /* Mantener el espacio arriba del p */
         }
+        .success {
+            color: #4FC3A1;
+            font-size: 16px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .error {
+            color: red;
+            font-size: 13px;
+            margin-top: 12px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -87,7 +99,7 @@
             <a href="cotiza.html">Cotiza tu pieza</a>
             <a href="contacto.html" class="active">Contacto</a>
         
-            <a href="http://100.121.201.91/" target="_blank">Polish</a>
+            <a href="/polish/">Polish</a>
             <a href="tienda.html">Tienda en linea</a>
         </nav>
     </header>
@@ -96,7 +108,7 @@
     <p>¿Tienes dudas o necesitas una cotización? Escríbenos y nuestro equipo te responderá rapidísimo. ¡Estamos para ayudarte!</p>
     </div>
     <div class="form-container">
-        <form action="#" method="post">
+        <form id="contactoForm">
             <div class="field">
                 <input type="text" name="nombre" placeholder="Nombre" required>
             </div>
@@ -108,6 +120,51 @@
             </div>
             <button type="submit">Enviar</button>
         </form>
+        <div id="message" style="display:none;"></div>
     </div>
+    <script>
+        const form = document.getElementById('contactoForm');
+        const submitButton = form.querySelector('button');
+        const messageEl = document.getElementById('message');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const payload = {
+                nombre: form.nombre.value,
+                email: form.email.value,
+                mensaje: form.mensaje.value,
+            };
+
+            submitButton.disabled = true;
+            submitButton.textContent = 'Enviando...';
+
+            try {
+                const response = await fetch('/api/leads/contacto/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+
+                if (response.ok) {
+                    form.style.display = 'none';
+                    messageEl.className = 'success';
+                    messageEl.textContent = '¡Listo! Recibimos tu mensaje, te contactaremos pronto.';
+                    messageEl.style.display = 'block';
+                } else {
+                    messageEl.className = 'error';
+                    messageEl.textContent = 'No se pudo enviar tu mensaje. Inténtalo de nuevo.';
+                    messageEl.style.display = 'block';
+                }
+            } catch (error) {
+                messageEl.className = 'error';
+                messageEl.textContent = 'Error de red. Inténtalo de nuevo.';
+                messageEl.style.display = 'block';
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Enviar';
+            }
+        });
+    </script>
 </body>
 </html>

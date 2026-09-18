@@ -110,7 +110,7 @@
             <a href="index.html">Inicio</a>
             <a href="cotiza.html" class="active">Cotiza tu pieza</a>
             <a href="contacto.html">Contacto</a>
-            <a href="http://100.121.201.91/" target="_blank">Polish</a>
+            <a href="/polish/">Polish</a>
             <a href="tienda.html">Tienda en linea</a>
         </nav>
     </header>
@@ -167,32 +167,28 @@
             submitButton.disabled = true;
             submitButton.textContent = 'Enviando...';
 
-            try {
-                const response = await fetch('http://192.168.1.107:5001/api/cotizar', {
-                    method: 'POST',
-                    body: formData
-                });
+            // Se manda por 2 canales en paralelo: el correo (mailer en iaserver)
+            // y el guardado en la base de datos de Polish (mismo origen). Si
+            // cualquiera de los 2 funciona, la solicitud se considera recibida.
+            const results = await Promise.allSettled([
+                fetch('http://192.168.1.107:5001/api/cotizar', { method: 'POST', body: formData }),
+                fetch('/api/leads/cotizaciones/', { method: 'POST', body: formData }),
+            ]);
 
-                const result = await response.json();
+            const anyOk = results.some((r) => r.status === 'fulfilled' && r.value.ok);
 
-                if (result.ok) {
-                    form.style.display = 'none';
-                    document.getElementById('message').textContent = '¡Listo! Recibimos tu solicitud, te contactaremos pronto.';
-                    document.getElementById('message').style.color = 'green';
-                    document.getElementById('message').style.display = 'block';
-                } else {
-                    document.getElementById('message').textContent = 'Error al enviar la solicitud. Por favor, inténtalo de nuevo.';
-                    document.getElementById('message').style.color = 'red';
-                    document.getElementById('message').style.display = 'block';
-                }
-            } catch (error) {
-                document.getElementById('message').textContent = 'Error de red. Por favor, inténtalo de nuevo.';
+            if (anyOk) {
+                form.style.display = 'none';
+                document.getElementById('message').textContent = '¡Listo! Recibimos tu solicitud, te contactaremos pronto.';
+                document.getElementById('message').style.color = 'green';
+                document.getElementById('message').style.display = 'block';
+            } else {
+                document.getElementById('message').textContent = 'Error al enviar la solicitud. Por favor, inténtalo de nuevo.';
                 document.getElementById('message').style.color = 'red';
                 document.getElementById('message').style.display = 'block';
-            } finally {
-                submitButton.disabled = false;
-                submitButton.textContent = 'Enviar';
             }
+            submitButton.disabled = false;
+            submitButton.textContent = 'Enviar';
         });
 
         function validateForm() {
