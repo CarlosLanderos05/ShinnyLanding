@@ -97,6 +97,11 @@
             font-size: 12px;
             margin-top: 5px;
         }
+        .success {
+            color: green;
+            font-size: 16px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -114,7 +119,7 @@
         <p>Para una cotización precisa, súbete una imagen clara de la pieza que necesitas. También, indícanos las dimensiones aproximadas. ¡Así podemos evaluar el proyecto a la perfección!</p>
     </div>
     <div class="form-container">
-        <form action="#" method="post" onsubmit="return validateForm()">
+        <form id="cotizacionForm">
             <div class="field">
                 <input type="text" name="nombre" placeholder="Nombre" required>
             </div>
@@ -143,8 +148,53 @@
             </div>
             <button type="submit">Enviar</button>
         </form>
+        <div id="message" class="success" style="display:none;"></div>
     </div>
     <script>
+        const form = document.getElementById('cotizacionForm');
+        const submitButton = form.querySelector('button');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            if (!validateForm()) {
+                return;
+            }
+
+            const formData = new FormData(form);
+            formData.set('telefono', telefonoConLada());
+
+            submitButton.disabled = true;
+            submitButton.textContent = 'Enviando...';
+
+            try {
+                const response = await fetch('http://192.168.1.107:5001/api/cotizar', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.ok) {
+                    form.style.display = 'none';
+                    document.getElementById('message').textContent = '¡Listo! Recibimos tu solicitud, te contactaremos pronto.';
+                    document.getElementById('message').style.color = 'green';
+                    document.getElementById('message').style.display = 'block';
+                } else {
+                    document.getElementById('message').textContent = 'Error al enviar la solicitud. Por favor, inténtalo de nuevo.';
+                    document.getElementById('message').style.color = 'red';
+                    document.getElementById('message').style.display = 'block';
+                }
+            } catch (error) {
+                document.getElementById('message').textContent = 'Error de red. Por favor, inténtalo de nuevo.';
+                document.getElementById('message').style.color = 'red';
+                document.getElementById('message').style.display = 'block';
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Enviar';
+            }
+        });
+
         function validateForm() {
             const archivoInput = document.querySelector('input[name="archivo"]');
             const telefonoInput = document.querySelector('input[name="telefono"]');
@@ -173,12 +223,14 @@
                 telefonoError.textContent = "";
             }
 
-            // Combinar lada y teléfono para enviar
+            return isValid;
+        }
+
+        function telefonoConLada() {
+            const telefonoInput = document.querySelector('input[name="telefono"]');
             const paisLadaSelect = document.querySelector('select[name="pais_lada"]');
             const lada = paisLadaSelect.getAttribute('data-lada');
-            telefonoInput.value = lada + telefonoInput.value;
-
-            return isValid;
+            return lada + telefonoInput.value;
         }
 
         function updateLada() {
